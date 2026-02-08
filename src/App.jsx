@@ -22,25 +22,30 @@ const SCENES = [
 export default function App() {
   const [sceneIndex, setSceneIndex] = useState(0);
   const [musicPlaying, setMusicPlaying] = useState(false);
-  const musicRef = useRef(null);
+  const audioRef = useRef(null);
+
+  // Called directly from WelcomeScene's click handler (synchronous in
+  // the user-gesture call stack) so the browser allows audio.play().
+  const startMusic = useCallback(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.volume = 0.3;
+      audio.play().catch((err) => console.warn("Audio play failed:", err));
+    }
+    setMusicPlaying(true);
+  }, []);
 
   const nextScene = useCallback(() => {
-    setSceneIndex((prev) => {
-      const next = Math.min(prev + 1, SCENES.length - 1);
-      // Start music after welcome screen — play() called directly
-      // from the user gesture call stack to satisfy autoplay policy
-      if (prev === 0 && next === 1) {
-        setMusicPlaying(true);
-        musicRef.current?.play();
-      }
-      return next;
-    });
+    setSceneIndex((prev) => Math.min(prev + 1, SCENES.length - 1));
   }, []);
 
   const currentScene = SCENES[sceneIndex];
 
   return (
     <div className="w-full h-screen overflow-hidden relative" style={{ background: '#0a0008' }}>
+      {/* Background music — always in the DOM so the ref is ready on first tap */}
+      <audio ref={audioRef} src="/song.mp3" loop preload="auto" />
+
       {/* Ambient background gradient */}
       <div
         className="fixed inset-0 transition-all duration-[2000ms]"
@@ -54,7 +59,7 @@ export default function App() {
 
       <AnimatePresence mode="wait">
         {currentScene === 'welcome' && (
-          <WelcomeScene key="welcome" onComplete={nextScene} />
+          <WelcomeScene key="welcome" onComplete={nextScene} onStart={startMusic} />
         )}
         {currentScene === 'intro' && (
           <IntroScene key="intro" onComplete={nextScene} />
@@ -76,8 +81,8 @@ export default function App() {
         )}
       </AnimatePresence>
 
-      {/* Background music with mute toggle */}
-      <MusicPlayer ref={musicRef} playing={musicPlaying} />
+      {/* Mute/unmute toggle button */}
+      <MusicPlayer audioRef={audioRef} playing={musicPlaying} />
     </div>
   );
 }

@@ -1,48 +1,16 @@
-import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Drop your favorite romantic Bollywood song as public/song.mp3
-// Free tracks: https://pixabay.com/music/search/romantic%20bollywood/
-const MUSIC_URL = "/song.mp3";
-// const MUSIC_URL = "https://pixabay.com/music/pop-dear-you-479885/";
-
-const MusicPlayer = forwardRef(function MusicPlayer({ playing }, ref) {
-  const audioRef = useRef(null);
+export default function MusicPlayer({ audioRef, playing }) {
   const [muted, setMuted] = useState(false);
-  const [hasAudio, setHasAudio] = useState(true);
 
-  useEffect(() => {
-    const audio = new Audio(MUSIC_URL);
-    audio.loop = true;
-    audio.volume = 0.4;
-    audio.preload = "auto";
-    audioRef.current = audio;
-
-    audio.addEventListener("error", () => setHasAudio(false));
-
-    return () => {
-      audio.pause();
-      audio.src = "";
-    };
-  }, []);
-
-  // Expose play() so it can be called directly from a user gesture handler
-  useImperativeHandle(ref, () => ({
-    play() {
-      const audio = audioRef.current;
-      if (audio && hasAudio) {
-        audio.play().catch(() => {});
-      }
-    },
-  }), [hasAudio]);
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.muted = muted;
-  }, [muted]);
-
-  if (!hasAudio) return null;
+  const toggleMute = () => {
+    setMuted((m) => {
+      const next = !m;
+      if (audioRef.current) audioRef.current.muted = next;
+      return next;
+    });
+  };
 
   return (
     <AnimatePresence>
@@ -52,7 +20,7 @@ const MusicPlayer = forwardRef(function MusicPlayer({ playing }, ref) {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
           transition={{ delay: 1, duration: 0.5 }}
-          onClick={() => setMuted((m) => !m)}
+          onClick={toggleMute}
           className="fixed bottom-5 right-5 z-50 w-12 h-12 rounded-full flex items-center justify-center cursor-pointer border-none outline-none"
           style={{
             background: "rgba(255, 45, 85, 0.15)",
@@ -119,6 +87,4 @@ const MusicPlayer = forwardRef(function MusicPlayer({ playing }, ref) {
       )}
     </AnimatePresence>
   );
-});
-
-export default MusicPlayer;
+}

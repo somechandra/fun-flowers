@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import gsap from 'gsap';
+import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import gsap from "gsap";
 
 export default function CountdownScene({ onComplete }) {
   const [count, setCount] = useState(3);
@@ -22,13 +22,17 @@ export default function CountdownScene({ onComplete }) {
 
   useEffect(() => {
     if (count > 0) {
-      gsap.fromTo('.countdown-ring', {
-        strokeDashoffset: 0,
-      }, {
-        strokeDashoffset: 283,
-        duration: 1,
-        ease: 'linear',
-      });
+      gsap.fromTo(
+        ".countdown-ring",
+        {
+          strokeDashoffset: 0,
+        },
+        {
+          strokeDashoffset: 283,
+          duration: 1,
+          ease: "linear",
+        }
+      );
     }
   }, [count]);
 
@@ -39,7 +43,10 @@ export default function CountdownScene({ onComplete }) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.4 }}
-      style={{ background: 'radial-gradient(ellipse at center, #1a0011 0%, #0a0008 70%)' }}
+      style={{
+        background:
+          "radial-gradient(ellipse at center, #1a0011 0%, #0a0008 70%)",
+      }}
     >
       <AnimatePresence mode="wait">
         {count > 0 ? (
@@ -48,18 +55,26 @@ export default function CountdownScene({ onComplete }) {
             initial={{ scale: 2, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.5, opacity: 0 }}
-            transition={{ duration: 0.4, ease: 'backOut' }}
-            className="relative flex items-center justify-center"
+            transition={{ duration: 0.4, ease: "backOut" }}
+            className="relative flex items-center justify-center -mt-16"
           >
             <svg width="120" height="120" className="absolute">
               <circle
-                cx="60" cy="60" r="45"
-                fill="none" stroke="#ff2d5533" strokeWidth="3"
+                cx="60"
+                cy="60"
+                r="45"
+                fill="none"
+                stroke="#ff2d5533"
+                strokeWidth="3"
               />
               <circle
                 className="countdown-ring"
-                cx="60" cy="60" r="45"
-                fill="none" stroke="#ff2d55" strokeWidth="3"
+                cx="60"
+                cy="60"
+                r="45"
+                fill="none"
+                stroke="#ff2d55"
+                strokeWidth="3"
                 strokeDasharray="283"
                 strokeDashoffset="0"
                 strokeLinecap="round"
@@ -70,8 +85,8 @@ export default function CountdownScene({ onComplete }) {
               className="text-6xl font-bold"
               style={{
                 fontFamily: "'Dancing Script', cursive",
-                color: '#ff2d55',
-                textShadow: '0 0 30px #ff2d5588',
+                color: "#ff2d55",
+                textShadow: "0 0 30px #ff2d5588",
               }}
             >
               {count}
@@ -82,9 +97,9 @@ export default function CountdownScene({ onComplete }) {
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 3, opacity: 0 }}
-            transition={{ duration: 0.5, ease: 'backOut' }}
-            className="text-5xl"
-            style={{ filter: 'drop-shadow(0 0 20px #ff2d55)' }}
+            transition={{ duration: 0.5, ease: "backOut" }}
+            className="text-5xl -mt-16"
+            style={{ filter: "drop-shadow(0 0 20px #ff2d55)" }}
           >
             ❤️
           </motion.div>
@@ -96,7 +111,7 @@ export default function CountdownScene({ onComplete }) {
         animate={{ opacity: 0.6 }}
         transition={{ delay: 0.5 }}
         className="mt-12 text-sm tracking-widest"
-        style={{ fontFamily: "'Poppins', sans-serif", color: '#ff6b8a' }}
+        style={{ fontFamily: "'Poppins', sans-serif", color: "#ff6b8a" }}
       >
         something special is coming...
       </motion.p>

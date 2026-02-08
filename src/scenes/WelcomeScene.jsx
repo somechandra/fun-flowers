@@ -5,7 +5,7 @@ import gsap from 'gsap';
 const MY_NAME = import.meta.env.VITE_MY_NAME || 'Me';
 const HER_NAME = import.meta.env.VITE_HER_NAME || 'You';
 
-export default function WelcomeScene({ onComplete }) {
+export default function WelcomeScene({ onComplete, onStart }) {
   const containerRef = useRef(null);
   const [ripple, setRipple] = useState(false);
 
@@ -39,6 +39,10 @@ export default function WelcomeScene({ onComplete }) {
   const handleTap = () => {
     if (ripple) return;
     setRipple(true);
+
+    // Start music immediately — must stay in the synchronous click
+    // call stack so the browser allows audio.play().
+    onStart?.();
 
     const tl = gsap.timeline({
       onComplete: () => onComplete(),
